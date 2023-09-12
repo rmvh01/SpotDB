@@ -1,0 +1,28 @@
+volumes:
+  gymscribe2-postgres-data:
+    external: true
+
+
+services:
+  fastapi:
+    environment:
+      SIGNING_KEY: ${SIGNING_KEY}
+      DATABASE_URL: postgresql://gymscribe2:password@postgres/gymscribe2
+    build:
+      context: api
+      dockerfile: Dockerfile.dev
+    ports:
+      - 8000:8000
+    volumes:
+      - ./api:/app
+
+  postgres:
+    image: postgres:14.5-bullseye
+    volumes:
+      - gymscribe2-postgres-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: password
+      POSTGRES_USER: gymscribe2
+      POSTGRES_DB: gymscribe2
+    ports:
+      - 15432:5432
