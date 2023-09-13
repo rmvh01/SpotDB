@@ -22,11 +22,11 @@ router = APIRouter()
         tags=["Exercise Templates"]
 )
 def create_exercise_templates(
-    exercise: ExerciseTemplateIn,
+    exercise_template: ExerciseTemplateIn,
     repo: ExerciseTemplateRepo = Depends(),
 ):
     return repo.create_exercise_template(
-        exercise=exercise,
+        exercise_template=exercise_template,
     )
 
 
@@ -40,20 +40,48 @@ def get_all_exercise_templates(
 ):
     return repo.get_all_exercise_templates()
 
+
+@router.get(
+    "/api/exercise_templates/{exercise_template_id}",
+    response_model=Union[ExerciseTemplateOut, Error],
+    tags=["Exercise Templates"]
+)
+def get_one_exercise_template(
+    exercise_template_id: int,
+    repo: ExerciseTemplateRepo = Depends()
+    ):
+    exercise_template = repo.get_one_exercise_template(exercise_template_id)
+    if exercise_template:
+        return exercise_template
+    else:
+        raise HTTPException(status_code=404, detail="Exercise not found")
+
 @router.put(
     "/api/exercise_templates/{exercise_template_id}",
     response_model=Union[ExerciseTemplateOut, Error],
     tags=["Exercise Templates"]
 )
-def change_one_exercise_template(
+def update_one_exercise_template(
     exercise_template_id: int,
     exercise_template: UpdateExerciseTemplate,
     repo: ExerciseTemplateRepo = Depends(),
 ):
-    result = repo.update_exercise_template(exercise_template_id, exercise_template)
+    result = repo.update_one_exercise_template(exercise_template_id, exercise_template)
     if result:
         return result
     else:
         raise HTTPException(
             status_code=404, detail="Exercise template not found or update failed"
-            )
+        )
+
+
+@router.delete(
+    "/api/exercise_templates/{exercise_template_id}",
+    response_model=dict,
+    tags=["Exercise Templates"]
+)
+def delete_one_exercise_template(
+    exercise_template_id: int,
+    repo: ExerciseTemplateRepo = Depends(),
+):
+    return repo.delete_one_exercise_template(exercise_template_id)

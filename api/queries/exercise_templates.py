@@ -27,7 +27,7 @@ class UpdateExerciseTemplate(ExerciseTemplateIn):
 
 class ExerciseTemplateRepo:
     # create one exercise template
-    def create_exercise_template(self, exercise: ExerciseTemplateIn):
+    def create_exercise_template(self, exercise_template: ExerciseTemplateIn):
         with pool.connection() as conn:
             with conn.cursor() as cur:
                 result = cur.execute(
@@ -41,13 +41,13 @@ class ExerciseTemplateRepo:
                     RETURNING id;
                     """,
                     [
-                        exercise.name,
-                        exercise.description,
-                        exercise.type,
+                        exercise_template.name,
+                        exercise_template.description,
+                        exercise_template.type,
                     ],
                 )
                 id = result.fetchone()[0]
-                data = exercise.dict()
+                data = exercise_template.model_dump()
                 return ExerciseTemplateOut(id=id, **data)
 
     # get all exercise templates
@@ -66,8 +66,8 @@ class ExerciseTemplateRepo:
                         ExerciseTemplateOut(
                             id=row[0],
                             name=row[1],
-                            description=row[2],
-                            type=row[3],
+                            type=row[2],
+                            description=row[3],
                         )
                         for row in result
                     ]
@@ -75,6 +75,35 @@ class ExerciseTemplateRepo:
         except Exception:
             print({"message": "cannot get all exercise records"})
             return []
+
+    # get one exercise template
+    def get_one_exercise_template(
+        self,
+        exercise_template_id: int,
+    ):
+        try:
+            with pool.connection() as conn:
+                with conn.cursor() as cur:
+                    cur.execute(
+                        """
+                        SELECT id, name, description, type
+                        FROM exercise_templates
+                        WHERE id = %s;
+                        """,
+                        [exercise_template_id]
+                    )
+                    row = cur.fetchone()
+                    if row:
+                        return ExerciseTemplateOut(
+                            id=row[0],
+                            name=row[1],
+                            description=row[2],
+                            type=row[3]
+                        )
+                    else:
+                        return None
+        except Exception:
+            return {"Message": "Failed to fetch that exercise template"}
 
     # change an exercise template
     def update_one_exercise_template(
@@ -97,6 +126,7 @@ class ExerciseTemplateRepo:
                         [
                             exercise_template.name,
                             exercise_template.description,
+                            exercise_template.type,
                             exercise_template_id
                         ],
                     )
@@ -104,5 +134,24 @@ class ExerciseTemplateRepo:
                         return {"message": "exercise updated sucessfully!"}
                     else:
                         return None # more error handling here later
+        except Exception as e:
+            return {"message": "failed to update exercise", "error": e}
+
+
+    def delete_one_exercise_template(
+        self,
+        exercise_template_id: int,
+    ):
+        try:
+            with pool.connection() as conn:
+                with conn.cursor() as cur:
+                    cur.execute(
+                        """
+                        DELETE FROM exercise_templates
+                        WHERE id = %s;
+                        """,
+                        [exercise_template_id],
+                    )
+                    return {"message": "Exercise template deleted successfully!"}
         except Exception:
-            return {"message": "failed to update exercise"}
+            return {"message": "Failed to delete exercise template."}
