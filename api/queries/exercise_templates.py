@@ -73,7 +73,7 @@ class ExerciseTemplateRepo:
                     ]
                     return exercise
         except Exception:
-            print({"message": "cannot get all exercise records"})
+            print({"message": "cannot get all exercise templates"})
             return []
 
     # get one exercise template
