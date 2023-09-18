@@ -62,7 +62,7 @@ class ExerciseTemplateRepo:
                         """,
                     )
                     result = cur.fetchall()
-                    exercise = [
+                    exercise_template = [
                         ExerciseTemplateOut(
                             id=row[0],
                             name=row[1],
@@ -71,7 +71,7 @@ class ExerciseTemplateRepo:
                         )
                         for row in result
                     ]
-                    return exercise
+                    return exercise_template
         except Exception:
             print({"message": "cannot get all exercise templates"})
             return []
