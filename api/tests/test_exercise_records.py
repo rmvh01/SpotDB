@@ -16,7 +16,7 @@ valid_time = str(datetime.now().time())
 
 class FakeExerciseRecordRepo:
 
-    def create_exercise_record(self, exercise_record):
+    def create_exercise_record(self, exercise_record: ExerciseRecordIn):
         return ExerciseRecordOut(
             id=999,
             exercise_id=exercise_record.exercise_id,

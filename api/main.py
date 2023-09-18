@@ -1,11 +1,16 @@
 from typing import Union
 from fastapi import FastAPI
-from routers import exercise_templates, exercise_records
+from routers import (
+    exercise_templates,
+    exercise_records,
+    metric_templates,
+)
 
 app = FastAPI()
 
 app.include_router(exercise_templates.router)
 app.include_router(exercise_records.router)
+app.include_router(metric_templates.router)
 
 
 @app.get("/api/launch-details")
