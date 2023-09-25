@@ -4,7 +4,7 @@ steps = [
         """
         CREATE TABLE exercise_records (
             id SERIAL NOT NULL UNIQUE PRIMARY KEY,
-            exercise_id INT REFERENCES exercise_templates(id) ON DELETE CASCADE,
+            exercise_template_id INT REFERENCES exercise_templates(id) ON DELETE CASCADE,
             date DATE NOT NULL,
             time TIME NOT NULL
         );
