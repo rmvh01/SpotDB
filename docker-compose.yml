@@ -1,5 +1,5 @@
 volumes:
-  gymscribe2-postgres-data:
+  spotdb-postgres-data:
     external: true
 
 
@@ -7,7 +7,7 @@ services:
   fastapi:
     environment:
       SIGNING_KEY: ${SIGNING_KEY}
-      DATABASE_URL: postgresql://gymscribe2:password@postgres/gymscribe2
+      DATABASE_URL: postgresql://spotdb:password@postgres/spotdb
     build:
       context: api
       dockerfile: Dockerfile.dev
@@ -19,10 +19,10 @@ services:
   postgres:
     image: postgres:14.5-bullseye
     volumes:
-      - gymscribe2-postgres-data:/var/lib/postgresql/data
+      - spotdb-postgres-data:/var/lib/postgresql/data
     environment:
       POSTGRES_PASSWORD: password
-      POSTGRES_USER: gymscribe2
-      POSTGRES_DB: gymscribe2
+      POSTGRES_USER: spotdb
+      POSTGRES_DB: spotdb
     ports:
       - 15432:5432
